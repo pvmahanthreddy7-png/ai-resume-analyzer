@@ -73,8 +73,18 @@ router.post('/analyze', authMiddleware, upload.single('resume'), async (req, res
       return res.status(400).json({ message: 'Could not read PDF: ' + pdfErr.message });
     }
 
-    if (!extractedText || extractedText.trim().length < 10) {
+   if (!extractedText || extractedText.trim().length < 10) {
       return res.status(400).json({ message: 'Could not extract text from PDF' });
+    }
+
+    // Check if it looks like a resume
+    const resumeKeywords = ['experience', 'education', 'skills', 'work', 'project', 
+    'degree', 'university', 'college', 'cgpa', 'gpa', 'internship', 'certification'];
+    const textLower = extractedText.toLowerCase();
+    const matchedKeywords = resumeKeywords.filter(keyword => textLower.includes(keyword));
+    
+    if (matchedKeywords.length < 2) {
+      return res.status(400).json({ message: 'This does not appear to be a resume. Please upload a valid resume PDF.' });
     }
 
     // Send to Groq AI
