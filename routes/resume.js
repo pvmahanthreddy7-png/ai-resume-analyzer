@@ -8,11 +8,11 @@ const authMiddleware = require('../middleware/auth');
 
 // Groq setup
 const getGroq = () => {
+  console.log('GROQ KEY:', process.env.GROQ_API_KEY ? process.env.GROQ_API_KEY.substring(0, 10) : 'NOT FOUND');
   return new Groq({
     apiKey: process.env.GROQ_API_KEY
   });
 };
-
 // Multer setup
 const storage = multer.memoryStorage();
 const upload = multer({
