@@ -28,6 +28,10 @@ const authRouter = require('./routes/auth');
 app.use('/api/resume', resumeRouter);
 app.use('/api/auth', authRouter);
 
+app.get('/', (req, res) => {
+  res.send('AI Resume Analyzer API is running!');
+});
+
 app.get('/debug', (req, res) => {
   res.json({ 
     groqKey: process.env.GROQ_API_KEY ? 'Key exists: ' + process.env.GROQ_API_KEY.substring(0, 10) : 'No key found'
