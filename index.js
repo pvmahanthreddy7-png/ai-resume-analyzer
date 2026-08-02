@@ -8,7 +8,7 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://ai-resume-frontend-bq67.vercel.app', 'https://ai-resume-frontend-chi.vercel.app'],
   credentials: true
 }));
 app.use(express.json());
