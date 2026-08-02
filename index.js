@@ -34,7 +34,8 @@ app.get('/', (req, res) => {
 
 app.get('/debug', (req, res) => {
   res.json({ 
-    groqKey: process.env.GROQ_API_KEY ? 'Key exists: ' + process.env.GROQ_API_KEY.substring(0, 10) : 'No key found'
+    groqKey: process.env.GROQ_API_KEY ? 'Key exists: ' + process.env.GROQ_API_KEY.substring(0, 10) : 'No key found',
+    keyLength: process.env.GROQ_API_KEY ? process.env.GROQ_API_KEY.length : 0
   });
 });
 
