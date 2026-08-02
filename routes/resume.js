@@ -7,14 +7,11 @@ const Resume = require('../models/Resume');
 const authMiddleware = require('../middleware/auth');
 
 // Groq setup
-let groq;
-try {
-  groq = new Groq({
+const getGroq = () => {
+  return new Groq({
     apiKey: process.env.GROQ_API_KEY
   });
-} catch (err) {
-  console.log('Groq setup error:', err.message);
-}
+};
 
 // Multer setup
 const storage = multer.memoryStorage();
@@ -112,7 +109,7 @@ router.post('/analyze', authMiddleware, upload.single('resume'), async (req, res
     Return ONLY the raw JSON object. No markdown, no backticks, no explanation. Just the JSON.
     `;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroq().chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 1000
