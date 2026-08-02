@@ -33,12 +33,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/debug', (req, res) => {
-  res.json({ 
-    groqKey: process.env.GROQ_API_KEY ? 'Key exists: ' + process.env.GROQ_API_KEY.substring(0, 10) : 'No key found',
-    keyLength: process.env.GROQ_API_KEY ? process.env.GROQ_API_KEY.length : 0
-  });
+  const Groq = require('groq-sdk');
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
+    messages: [{ role: 'user', content: 'Say hi' }],
+    max_tokens: 10
+  }).then(r => res.json({ success: true, response: r.choices[0].message.content }))
+    .catch(e => res.json({ success: false, error: e.message }));
 });
-
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server started on http://localhost:${PORT}`);
