@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const Groq = require('groq-sdk');
-const getGroq = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 const PDFParser = require('pdf2json');
 const Resume = require('../models/Resume');
 const authMiddleware = require('../middleware/auth');
 
-// Gemini setup
+ const getGroq = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 
 // Multer setup
