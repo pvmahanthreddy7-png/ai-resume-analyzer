@@ -2,17 +2,14 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const Groq = require('groq-sdk');
+const getGroq = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
 const PDFParser = require('pdf2json');
 const Resume = require('../models/Resume');
 const authMiddleware = require('../middleware/auth');
 
-// Groq setup
-const getGroq = () => {
-  console.log('GROQ KEY:', process.env.GROQ_API_KEY ? process.env.GROQ_API_KEY.substring(0, 10) : 'NOT FOUND');
-  return new Groq({
-    apiKey: process.env.GROQ_API_KEY
-  });
-};
+// Gemini setup
+
+
 // Multer setup
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -89,7 +86,7 @@ router.post('/analyze', authMiddleware, upload.single('resume'), async (req, res
       return res.status(400).json({ message: 'This does not appear to be a resume. Please upload a valid resume PDF.' });
     }
 
-    // Send to Groq AI
+    // Send to Gemini AI
     const prompt = `
     You are an expert resume analyzer. Analyze the following resume for a ${jobRole} position.
     
@@ -109,13 +106,9 @@ router.post('/analyze', authMiddleware, upload.single('resume'), async (req, res
     Return ONLY the raw JSON object. No markdown, no backticks, no explanation. Just the JSON.
     `;
 
-    const completion = await getGroq().chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 1000
-    });
-
-    const aiResponse = completion.choices[0].message.content;
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const result = await model.generateContent(prompt);
+    const aiResponse = result.response.text();
     const cleanResponse = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
     const analysis = JSON.parse(cleanResponse);
 
